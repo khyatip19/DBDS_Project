@@ -5,7 +5,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-    <title>Register</title>
+    <title>Register - Railway Booking System</title>
 </head>
 <body>
 
@@ -57,6 +57,9 @@
 </form>
 
 <p><%= message %></p>
+
+<!-- Link to go back to login page -->
+<p>Already have an account? <a href="login.jsp">Login here</a></p>
 
 </body>
 </html>

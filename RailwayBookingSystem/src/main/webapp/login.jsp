@@ -55,5 +55,8 @@
 
 <p><%= message %></p>
 
+<!-- Button to redirect to register page -->
+<p>Do not have an account?<a href="register.jsp"> Create New Account</a></p>
+
 </body>
 </html>
