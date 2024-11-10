@@ -6,16 +6,18 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <title>Register - Railway Booking System</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
 
-<% 
-    String message = "";
+<%
+    String message = "";  // Initialize the message variable to prevent "cannot be resolved" error
+    Connection con = null;
     if ("POST".equalsIgnoreCase(request.getMethod())) {
         try {
             // Establish database connection
             ApplicationDB db = new ApplicationDB();
-            Connection con = db.getConnection();
+            con = db.getConnection();
 
             // Prepare and execute the registration query
             String username = request.getParameter("username");
@@ -33,33 +35,43 @@
             pst.setString(5, lastName);
 
             int rowCount = pst.executeUpdate();
-            message = (rowCount > 0) ? "Registration successful!" : "Registration failed.";
+            if (rowCount > 0) {
+                // Registration successful, redirect to login page
+                response.sendRedirect("login.jsp?message=Registration successful! Please log in.");
+                return;  // Stop further processing of this page
+            } else {
+                message = "Registration failed.";
+            }
 
-            // Close the database connection
-            db.closeConnection(con);
         } catch (Exception e) {
             e.printStackTrace();
             message = "Error: " + e.getMessage();
+        } finally {
+            // Close the database connection only once here
+            if (con != null) {
+                ApplicationDB db = new ApplicationDB();
+                db.closeConnection(con);
+            }
         }
     }
 %>
 
-<h2>Register</h2>
-<form method="post" action="register.jsp">
-    <table>
-        <tr><td>Username:</td><td><input type="text" name="username" required></td></tr>
-        <tr><td>Password:</td><td><input type="password" name="password" required></td></tr>
-        <tr><td>Email:</td><td><input type="email" name="email" required></td></tr>
-        <tr><td>First Name:</td><td><input type="text" name="first_name"></td></tr>
-        <tr><td>Last Name:</td><td><input type="text" name="last_name"></td></tr>
-    </table>
-    <input type="submit" value="Register">
-</form>
+<div class="form-container">
+    <h2>Create an Account</h2>
+    <p class="subtitle">Fill in your details to sign up.</p>
 
-<p><%= message %></p>
+    <!-- Registration Form -->
+    <form method="post" action="register.jsp">
+        <input type="text" name="username" placeholder="User ID" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <input type="email" name="email" placeholder="E-Mail Address" required>
+        <input type="text" name="first_name" placeholder="First Name">
+        <input type="text" name="last_name" placeholder="Last Name">
+        <input type="submit" value="Sign Up">
+    </form>
 
-<!-- Link to go back to login page -->
-<p>Already have an account? <a href="login.jsp">Login here</a></p>
+    <p class="signup-link">Already have an account? <a href="login.jsp">Sign in</a></p>
+</div>
 
 </body>
 </html>

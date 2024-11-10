@@ -5,12 +5,18 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-    <title>Login</title>
+    <title>Login - Railway Booking System</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
 </head>
+
 <body>
 
-<% 
-    String message = "";
+<%
+    String message = request.getParameter("message"); // Get the message from the query parameter
+    if (message == null) {
+        message = "";  // Initialize message if it's null
+    }
+
     if ("POST".equalsIgnoreCase(request.getMethod())) {
         try {
             // Establish database connection
@@ -44,19 +50,26 @@
     }
 %>
 
-<h2>Login</h2>
-<form method="post" action="login.jsp">
-    <table>
-        <tr><td>Username:</td><td><input type="text" name="username" required></td></tr>
-        <tr><td>Password:</td><td><input type="password" name="password" required></td></tr>
-    </table>
-    <input type="submit" value="Login">
-</form>
+<div class="form-container">
 
-<p><%= message %></p>
+    <!-- Display Success/Error Message -->
+    <% if (!message.isEmpty()) { %>
+        <p class="message"><%= message %></p>
+    <% } %>
 
-<!-- Button to redirect to register page -->
-<p>Do not have an account?<a href="register.jsp"> Create New Account</a></p>
+    <h2>Welcome back</h2>
+    <p class="subtitle">Please enter your details to sign in.</p>
+
+    <!-- Login Form -->
+    <form method="post" action="login.jsp">
+        <input type="text" name="username" placeholder="Username" required>
+        <input type="password" name="password" placeholder="Password" required>
+
+        <input type="submit" value="Sign in">
+    </form>
+
+    <p class="signup-link">Don't have an account yet? <a href="register.jsp">Sign Up</a></p>
+</div>
 
 </body>
 </html>
