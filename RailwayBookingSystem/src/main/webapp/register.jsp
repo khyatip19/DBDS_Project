@@ -11,13 +11,12 @@
 <body>
 
 <%
-    String message = "";  // Initialize the message variable to prevent "cannot be resolved" error
-    Connection con = null;
+    String message = "";  // Initialize the message variable
     if ("POST".equalsIgnoreCase(request.getMethod())) {
         try {
             // Establish database connection
             ApplicationDB db = new ApplicationDB();
-            con = db.getConnection();
+            Connection con = db.getConnection();
 
             // Prepare and execute the registration query
             String username = request.getParameter("username");
@@ -37,28 +36,32 @@
             int rowCount = pst.executeUpdate();
             if (rowCount > 0) {
                 // Registration successful, redirect to login page
+                db.closeConnection(con);
                 response.sendRedirect("login.jsp?message=Registration successful! Please log in.");
                 return;  // Stop further processing of this page
             } else {
                 message = "Registration failed.";
             }
 
+            // Close the database connection
+            db.closeConnection(con);
+        } catch (com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException e) {
+            // This exception is thrown if there's a unique constraint violation (e.g., duplicate username or email)
+            message = "Username or email already exists. Please try a different one.";
         } catch (Exception e) {
             e.printStackTrace();
             message = "Error: " + e.getMessage();
-        } finally {
-            // Close the database connection only once here
-            if (con != null) {
-                ApplicationDB db = new ApplicationDB();
-                db.closeConnection(con);
-            }
         }
     }
 %>
 
 <div class="form-container">
+
     <h2>Create an Account</h2>
     <p class="subtitle">Fill in your details to sign up.</p>
+
+    <!-- Display the error message if there's an issue -->
+    <p class="error-message"><%= message %></p>
 
     <!-- Registration Form -->
     <form method="post" action="register.jsp">

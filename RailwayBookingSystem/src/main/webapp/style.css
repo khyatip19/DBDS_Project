@@ -118,3 +118,9 @@ p.subtitle {
 .link-button:hover {
     background-color: #555;
 }
+
+.error-message {
+    color: red;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
